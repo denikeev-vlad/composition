@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.fir.declarations.builder.buildField
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -33,7 +35,12 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
+
+
 
 dependencies {
 
