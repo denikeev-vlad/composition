@@ -34,15 +34,6 @@ class GameFinishedFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner,
-            object : OnBackPressedCallback( true) {
-            override fun handleOnBackPressed() {
-                retryGame()
-            }
-        })
-    }
 
     override fun onDestroyView() {
         super.onDestroyView()
