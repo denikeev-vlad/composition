@@ -1,6 +1,8 @@
 package com.example.composition.domain.game
 
 import android.os.CountDownTimer
+import com.example.composition.domain.entity.GameResult
+import com.example.composition.presentation.GameViewModel
 
 class GameTimer(
     private val gameTimeInSeconds: Long,
@@ -16,7 +18,7 @@ class GameTimer(
             }
 
             override fun onFinish() {
-                onFinish()
+                onFinish.invoke()
             }
         }.start()
     }

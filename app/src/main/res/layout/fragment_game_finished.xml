@@ -11,12 +11,15 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="48dp"
+        android:background="#C87979"
         android:contentDescription="@string/game_over"
         app:layout_constraintBottom_toTopOf="@id/tv_required_answers"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:scrCompat="@drawable/ic_smile"/>
+        app:srcCompat="@drawable/circle_background"
+        tools:scrCompat="@drawable/ic_smile"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tv_required_answers"

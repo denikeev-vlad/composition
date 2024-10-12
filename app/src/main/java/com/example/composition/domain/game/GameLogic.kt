@@ -20,9 +20,13 @@ class GameLogic(
         if (isCorrect) countOfRightAnswers++
         countOfQuestions++
         return isCorrect
+        generateQuestion()
     }
 
-    fun calculateProgress(): Int {
+    fun calculatePercentRightAnswers(): Int {
+        if (countOfQuestions == 0) {
+            return 0
+        }
         return ((countOfRightAnswers / countOfQuestions.toDouble()) * 100).toInt()
     }
 

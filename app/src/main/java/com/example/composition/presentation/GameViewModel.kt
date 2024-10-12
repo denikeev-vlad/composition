@@ -1,7 +1,6 @@
 package com.example.composition.presentation
 
 import android.app.Application
-import android.os.CountDownTimer
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -50,22 +49,38 @@ class GameViewModel(application: Application): AndroidViewModel(application) {
     val gameResult: LiveData<GameResult>
         get() = _gameResult
 
+    private val _enoughCountOfRightAnswers = MutableLiveData<Boolean>()
+    val enoughCountOfRightAnswers: LiveData<Boolean>
+        get() = _enoughCountOfRightAnswers
+
+    private val _enoughPercentOfRightAnswers = MutableLiveData<Boolean>()
+    val enoughPercentOfRightAnswers: LiveData<Boolean>
+        get() = _enoughPercentOfRightAnswers
+
+    private val _minPercent = MutableLiveData<Int>()
+    val minPercent: LiveData<Int>
+        get() = _minPercent
+
+
     fun startGame(level: Level) {
         getGameSettings(level)
         startTimer()
         generateNextQuestion()
+        updateProgress()
     }
 
     private fun getGameSettings(level: Level) {
         this.level = level
         this.gameSettings = getGameSettingUseCase(level)
         gameLogic = GameLogic(gameSettings, generateQuestionUseCase)
+        _minPercent.value = gameSettings.minPercentOfRightAnswers
     }
 
     private fun startTimer() {
         timer = GameTimer(gameSettings.gameTimeInSeconds, { time ->
             _formattedTime.value = time
-        }, {
+        },  onFinish = {
+            // Действия при завершении таймера
             finishGame()
         })
         timer?.start()
@@ -83,23 +98,24 @@ class GameViewModel(application: Application): AndroidViewModel(application) {
     }
 
     private fun updateProgress() {
-        val percent = gameLogic.calculateProgress()
+        val percent = gameLogic.calculatePercentRightAnswers()
         _percentOfRightAnswers.value = percent
         _progressAnswers.value = String.format(
             context.resources.getString(R.string.progress_answers),
-            gameLogic.countOfRightAnswers,
-            gameSettings.minCountOfRightAnswers
+            gameLogic.countOfRightAnswers.toString(),
+            gameSettings.minCountOfRightAnswers.toString()
         )
+        _enoughCountOfRightAnswers.value = gameLogic.countOfRightAnswers >= gameSettings.minCountOfRightAnswers
+        _enoughPercentOfRightAnswers.value = percent >= gameSettings.minPercentOfRightAnswers
     }
 
     private fun finishGame() {
-        val result = GameResult(
-            gameLogic.countOfRightAnswers >= gameSettings.minCountOfRightAnswers,
+        _gameResult.value = GameResult(
+            enoughCountOfRightAnswers.value == true && enoughPercentOfRightAnswers.value == true,
             gameLogic.countOfRightAnswers,
             gameLogic.countOfQuestions,
             gameSettings
         )
-        _gameResult.value = result
     }
 
     override fun onCleared() {

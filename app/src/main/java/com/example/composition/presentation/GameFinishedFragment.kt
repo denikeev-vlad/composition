@@ -1,12 +1,15 @@
 package com.example.composition.presentation
 
+import android.R.drawable.alert_dark_frame
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.graphics.drawable.toDrawable
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.ViewModelProvider
 import com.example.composition.R
 import com.example.composition.databinding.FragmentGameFinishedBinding
 import com.example.composition.domain.entity.GameResult
@@ -15,6 +18,11 @@ import com.example.composition.domain.entity.GameResult
 class GameFinishedFragment : Fragment() {
 
     private lateinit var gameResult: GameResult
+    private val gameFinishedViewModel : GameFinishedViewModel by lazy {
+        ViewModelProvider(
+            this,
+            ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application))[GameFinishedViewModel::class.java]
+    }
 
     private var _binding: FragmentGameFinishedBinding? = null
     private val binding: FragmentGameFinishedBinding
@@ -53,6 +61,17 @@ class GameFinishedFragment : Fragment() {
     fun argsParams() {
         requireArguments().getParcelable<GameResult>(KEY_GAME_RESULT)?.let {
             gameResult = it
+        }
+    }
+
+    fun observers() {
+        gameFinishedViewModel.requiredAnswers.observe(viewLifecycleOwner) {
+            val imageRes = if (it) {
+                android.R.drawable.ic_input_add
+            } else {
+                android.R.drawable.ic_delete
+            }
+            binding.emojiResult.setImageResource(imageRes)
         }
     }
 
